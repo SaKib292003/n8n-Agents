@@ -1,0 +1,187 @@
+{
+  "name": "Cold_Email_Marketing_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "db8fc4ba-28e9-435a-8785-0e784af63acc",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1OuNZcdDJXKAlmOd2Ktgokyqymwy6C_it6TseDeo2rxM/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OuNZcdDJXKAlmOd2Ktgokyqymwy6C_it6TseDeo2rxM/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "453ec64d-1b71-4e2d-a2bb-5604c8b8cbc8",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R7jKFkJbTat0Y2SP",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a1b1924-f9c5-4f41-8c6f-4b1a2cfd2e15",
+              "name": "Email Subject",
+              "value": "India's Best AI Course [Flexi Course]",
+              "type": "string"
+            },
+            {
+              "id": "c59e8a5b-e0e8-4fd2-aa09-d7edf67dc2ab",
+              "name": "Emil Body",
+              "value": "<p>Hello,</p>|<p><strong>DV is launching the Flexi Learning Program in Data Science & Agentic AI</strong></p>|<p>Designed for students (UG/PG/PhD) and working professionals, this program offers:</p>|<ul><li>🎥 Access to class videos + 📚 downloadable material</li><li>🧑‍🏫 One-on-one doubt clarification & ✅ assignment feedback</li><li>🕒 Flexi learning with 📢 live crash course alerts</li><li>👥 Community & WhatsApp groups for peer momentum</li><li>🛠️ Real industry projects to build a portfolio</li><li>📝 Resume & profile building with expert reviews</li><li>🧠 Interview preparation kit + 🎯 mock interviews</li><li>🚀 Placement assistance & 📜 course completion certificate</li></ul>|<p><strong>Stay ahead in the competitive job market!</strong> 💼🚀</p>|<p><em>Stay tuned for more details! 😊</em></p>|<p><a href=\"https://course.dvanalyticsmds.com/\" target=\"_blank\" rel=\"noopener\">https://course.dvanalyticsmds.com/</a></p>|<p>Regards,<br>Dev 🙏</p>",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "6fc78fe8-aabc-46a1-8a40-cbb325de97af",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json.Email }}",
+        "subject": "={{ $json['Email Subject'] }}",
+        "message": "={{ $json['Emil Body'] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "77265d56-8cac-4399-9486-dc6c9bcdd690",
+      "name": "Send a message",
+      "webhookId": "68186f49-25ff-4eba-9a63-31b6921bce44",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "aI9oQkL348KsIdUO",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "e460f8d3-a21b-44aa-9d43-cb55083efb15",
+      "name": "Wait",
+      "webhookId": "b6296d07-e6ac-45c6-acee-99c5a65e8795"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cc34461c-5f24-4cab-baad-0af52f6815d3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "82c97dedcdd1759c57ff884b20649a25f6c68fca7901eca602afefa65e7ef4dd"
+  },
+  "id": "mLYw5NKqO0RmkoZ9",
+  "tags": [
+    {
+      "createdAt": "2025-08-21T07:19:09.690Z",
+      "updatedAt": "2025-08-21T07:19:09.690Z",
+      "id": "gFV0UJmOoQnGHjRP",
+      "name": "Agentic_AI_Course"
+    }
+  ]
+}
