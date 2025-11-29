@@ -1,0 +1,171 @@
+{
+  "name": "Telegram Tech News Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        -64
+      ],
+      "id": "b66526c6-446b-4780-84ce-b8c29716396c",
+      "name": "Telegram Trigger",
+      "webhookId": "cf955af9-7e33-406c-ab40-644b4ec475ff",
+      "credentials": {
+        "telegramApi": {
+          "id": "Zgdt7i4wJwoyeEzi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful AI Assistant {{ $json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -64
+      ],
+      "id": "665ace9e-9ca2-406e-a371-3ac30a7b15d1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        160
+      ],
+      "id": "ec29880a-c4b0-4c98-8e79-1222b6e091b4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "13rksJONO5YH1Yjs",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "all",
+        "limit": 10,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.hackerNewsTool",
+      "typeVersion": 1,
+      "position": [
+        32,
+        160
+      ],
+      "id": "11d33d96-bb4e-4f69-ad45-f71650b9b69a",
+      "name": "Get many items in Hacker News"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        -64
+      ],
+      "id": "94c0c331-ef93-45bf-a602-baf3909c60f7",
+      "name": "Send a text message",
+      "webhookId": "470411a6-5718-4df2-bf1b-8d0faee57361",
+      "credentials": {
+        "telegramApi": {
+          "id": "Zgdt7i4wJwoyeEzi",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many items in Hacker News": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e9408611-e8f9-4946-911a-91c9a7327a89",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "82c97dedcdd1759c57ff884b20649a25f6c68fca7901eca602afefa65e7ef4dd"
+  },
+  "id": "HdY8IMWsKQSu9tA6",
+  "tags": [
+    {
+      "createdAt": "2025-08-21T07:19:09.690Z",
+      "updatedAt": "2025-08-21T07:19:09.690Z",
+      "id": "gFV0UJmOoQnGHjRP",
+      "name": "Agentic_AI_Course"
+    }
+  ]
+}
