@@ -1,0 +1,182 @@
+{
+  "name": "Email_Smart_Response_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        -400
+      ],
+      "id": "796d9017-bcab-4e05-b094-3801622f811a",
+      "name": "Mail Checker",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "aI9oQkL348KsIdUO",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a helpful assistant. Red and understand the email and reply to the email a professional tone. Email starts here \n\n {{ $json.snippet }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -576,
+        -400
+      ],
+      "id": "f2601ec3-b02f-48e3-9d50-311dd4522143",
+      "name": "Compose Reply Node",
+      "credentials": {
+        "openAiApi": {
+          "id": "13rksJONO5YH1Yjs",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Mail Checker').item.json.From }}",
+        "subject": "=RE:{{ $('Mail Checker').item.json.Subject }}",
+        "message": "={{ $json.message.content }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        -400
+      ],
+      "id": "cc6fb826-9e45-4b27-b082-bc22260230d8",
+      "name": "Send a Reply Node",
+      "webhookId": "c224c6ae-8985-4257-bc3c-866c37c6dfe1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "aI9oQkL348KsIdUO",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### This nodes gets the email",
+        "height": 256,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -896,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "df801d9b-49e2-460e-8cf9-6025a50e28d7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### This node helps us in drafting the reply",
+        "height": 256,
+        "width": 320,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "7983df6a-9205-45ec-90f0-9b910e9ca6d6",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "### This node sends the reply",
+        "height": 256,
+        "width": 272,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "167fff05-1b48-4a6b-9e6d-4f302f0a3045",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Mail Checker": {
+      "main": [
+        [
+          {
+            "node": "Compose Reply Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose Reply Node": {
+      "main": [
+        [
+          {
+            "node": "Send a Reply Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "24807f06-e7af-4ff3-ae8d-e94974951261",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "82c97dedcdd1759c57ff884b20649a25f6c68fca7901eca602afefa65e7ef4dd"
+  },
+  "id": "oKy3JiL14T6KjjL8",
+  "tags": [
+    {
+      "createdAt": "2025-08-21T07:19:09.690Z",
+      "updatedAt": "2025-08-21T07:19:09.690Z",
+      "id": "gFV0UJmOoQnGHjRP",
+      "name": "Agentic_AI_Course"
+    }
+  ]
+}
