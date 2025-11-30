@@ -1,0 +1,117 @@
+{
+  "name": "Webhook-Agent-Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aurvedic-guru",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9f41f80b-d77a-48de-864c-0bba23d228bb",
+      "name": "Webhook",
+      "webhookId": "09194000-b610-48cb-a5d4-732b486c5086"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant. you are an expert in ayurveda. you are as ayurvedic guru. you must answer the user questions based on the ayurvedic knowledge. you give the final output in 4 bullet points only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "238e9559-5e8f-4297-9408-234104fa2df4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "645d6578-b887-4633-9cc4-4f3a0fd0c9dc",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OMKmJEpYO8hPLUFW",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "0339721a-e213-4fbd-a5d2-20c7ed358375",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2bb5520b-1ea4-446b-a515-c3b37b408bd2",
+  "meta": {
+    "instanceId": "3da626e002fbc0a1bfe8c9a04ab7797f02cbea4d229e4502f93c036b79a81ba9"
+  },
+  "id": "C7O1Fq4Rl4Hx2OJn",
+  "tags": []
+}
