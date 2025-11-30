@@ -1,7 +1,4 @@
-# n8n-Agents
-n8n workflows with the automated agents projects
-
-# n8n Agents Repository
+# n8n Agents 
 
 This repository contains a collection of workflows, configurations, and reference implementations designed to help you build **Agentic AI systems using n8n**. These files demonstrate how to automate processes, integrate LLMs, and create intelligent agents capable of handling business tasks.
 
@@ -103,10 +100,43 @@ To fully use these workflows, ensure you have:
 
 ---
 
-## 📘 Documentation
+## 📘 Webhook Agent
+
+This repository now includes a **Webhook-based Agent** built using n8n. This agent allows external apps, websites, or services to trigger automated LLM workflows via a public webhook.
+
+### 🔗 Live Webhook URL
+
+```
+[YOUR_WEBHOOK_URL_HERE](https://ayurvedic-sage-chat.lovable.app)
+```
+
+(Replace with your actual webhook link)
+
+### 📄 Workflow JSON File
+
+The webhook workflow is included here:
+``
+
+### 🧠 What This Workflow Does
+
+* Listens for incoming webhook requests
+* Reads and validates the incoming data
+* Passes data into LLM (OpenAI / Cohere / Gemini)
+* Generates a structured or natural language response
+* Sends automated replies or triggers other flows
+* Can be used for chatbots, form submissions, voice apps, or automation
+
+### 📌 Key Features
+
+* Fast, real-time processing
+* Fully customizable node pipeline
+* Can integrate with Sheets, Email, APIs, or databases
+* Supports Agentic reasoning and tool-calling
+
+### 📘 Documentation
 
 Each workflow file is self-contained and documented inside n8n.
-Refer to node descriptions and comments in the workflow for understanding logic.
+Refer to node descriptions and comments in the workflow for understanding logic. Additional documentation for the webhook agent is included inside the JSON workflow.
 
 ---
 
