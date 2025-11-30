@@ -107,15 +107,13 @@ This repository now includes a **Webhook-based Agent** built using n8n. This age
 ### 🔗 Live Webhook URL
 
 ```
-[YOUR_WEBHOOK_URL_HERE](https://ayurvedic-sage-chat.lovable.app)
+https://ayurvedic-sage-chat.lovable.app
 ```
 
-(Replace with your actual webhook link)
 
 ### 📄 Workflow JSON File
 
-The webhook workflow is included here:
-``
+The webhook workflow is in the files section.
 
 ### 🧠 What This Workflow Does
 
