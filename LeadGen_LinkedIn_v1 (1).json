@@ -1,0 +1,265 @@
+{
+  "name": "LeadGen_LinkedIn_v1",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Lead Gen Form",
+        "formDescription": "To collect the search string",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Search String",
+              "placeholder": "AI/ML, Pune.",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f3e7fc72-73fc-4004-943f-dd64157ba663",
+      "name": "On form submission",
+      "webhookId": "167c8139-17c9-4fba-8f49-6065701aabe2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "282f6f16-d80d-4279-bb66-8dc07be0cdc9",
+              "name": "currentstartIndex",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "7cc4fb11-450a-49fb-b1f5-7231e84164fb",
+              "name": "maxPages",
+              "value": 10,
+              "type": "number"
+            },
+            {
+              "id": "4bfc64c9-9b8a-4b55-8e11-d888598687b1",
+              "name": "googleApiKey",
+              "value": "AIzaSyAXxxkURvnU0Iiz4aRCW0EWSB2m6kJD9A8",
+              "type": "string"
+            },
+            {
+              "id": "f4e313e0-f14c-4bd7-9fd4-90b646fe1fa4",
+              "name": "googleCx",
+              "value": "f24428c086de74b7d",
+              "type": "string"
+            },
+            {
+              "id": "b8a11498-fcf1-4292-9f0b-45bb86d7a0ff",
+              "name": "query",
+              "value": "={{ $json['Search String'] }} site:linkedin.com/in",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "03f4b938-88bb-42c9-a33b-a8ab820f9c4c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/customsearch/v1",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{ $json.googleApiKey }}"
+            },
+            {
+              "name": "cx",
+              "value": "={{ $json.googleCx }}"
+            },
+            {
+              "name": "q",
+              "value": "={{ $json.query }}"
+            },
+            {
+              "name": "start",
+              "value": "={{ $json.currentstartIndex }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "bb5c1215-bbd0-499e-9cce-0fc2aea36518",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items from the previous node (HTTP Request)\nconst inputItems = $input.all();\nconst output = [];\n\nfor (const item of inputItems) {\n  const data = item.json;\n\n  // Google Custom Search response usually has an 'items' array\n  const results = data.items || [];\n\n  for (const result of results) {\n    const fullTitle = result.title || '';\n    const profileLink = result.link || '';\n    const snippet = result.snippet || '';\n\n    // ----- Extract candidate name from the title -----\n    // 1) Remove trailing \" | LinkedIn ...\" part\n    let candidateName = fullTitle.replace(/\\s*\\|\\s*LinkedIn.*/i, '');\n\n    // 2) If there's a \" - \" pattern, take the first part as the name\n    candidateName = candidateName.split(' - ')[0].trim();\n\n    // Push one clean item per profile with EXACTLY four fields\n    output.push({\n      json: {\n        name: candidateName,   // name of the candidate\n        title: fullTitle,      // full title text\n        profileLink,           // LinkedIn URL\n        snippet,               // summary / snippet\n      },\n    });\n  }\n\n  // Fallback: if there is no 'items' array but it looks like a single result\n  if (!results.length && (data.title || data.link)) {\n    const fullTitle = data.title || '';\n    const profileLink = data.link || '';\n    const snippet = data.snippet || '';\n\n    let candidateName = fullTitle.replace(/\\s*\\|\\s*LinkedIn.*/i, '');\n    candidateName = candidateName.split(' - ')[0].trim();\n\n    output.push({\n      json: {\n        name: candidateName,\n        title: fullTitle,\n        profileLink,\n        snippet,\n      },\n    });\n  }\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5bdf39bd-6846-455c-947b-c8c3272e468b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/14bv0em-w0jRXE1jmItAzRnaxrHJC-bBx5hNOnND5ui0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14bv0em-w0jRXE1jmItAzRnaxrHJC-bBx5hNOnND5ui0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Title": "={{ $json.title }}",
+            "Profile Link": "={{ $json.profileLink }}",
+            "Snippet": "={{ $json.snippet }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profile Link",
+              "displayName": "Profile Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Snippet",
+              "displayName": "Snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        0
+      ],
+      "id": "f584c599-a466-4dba-9c2b-d9d8f885ee92",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T9Mcyks8BleFfGmZ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6fa9f80c-f32b-45c4-be30-c74bf12f2359",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3da626e002fbc0a1bfe8c9a04ab7797f02cbea4d229e4502f93c036b79a81ba9"
+  },
+  "id": "RAg1q7un3U2iKH6n",
+  "tags": []
+}
