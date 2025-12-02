@@ -22,9 +22,9 @@
         0,
         0
       ],
-      "id": "f3e7fc72-73fc-4004-943f-dd64157ba663",
+      "id": "<Your Id>",
       "name": "On form submission",
-      "webhookId": "167c8139-17c9-4fba-8f49-6065701aabe2"
+      "webhookId": "<Your_webhook_id>"
     },
     {
       "parameters": {
@@ -45,13 +45,13 @@
             {
               "id": "4bfc64c9-9b8a-4b55-8e11-d888598687b1",
               "name": "googleApiKey",
-              "value": "AIzaSyAXxxkURvnU0Iiz4aRCW0EWSB2m6kJD9A8",
+              "value": "<Your_google_api_key>",
               "type": "string"
             },
             {
               "id": "f4e313e0-f14c-4bd7-9fd4-90b646fe1fa4",
               "name": "googleCx",
-              "value": "f24428c086de74b7d",
+              "value": "<your_google_cx_value>",
               "type": "string"
             },
             {
